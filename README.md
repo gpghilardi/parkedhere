@@ -3,13 +3,14 @@
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
 Simple Kotlin/Jetpack Composed-based WearOS (Android) application.
+
 Purpose: quickly store a GPS location and navigate to it via Google Maps.
 
 If you, like me, need something to remember where you park your car and quickly navigate to it, this is your app.
 
 This app serves two distinct purposes:
 - educational: this app allows me to experiment with Kotlin/Jetpack Compose on my WearOS smartwatch
-- real aid: it gives me a fast way to get back to my car's parking directly from my smartwatch (no smartphone!)
+- practical: it gives me a fast way to get back to my car's parking directly from my smartwatch
 
 ## Table of Contents
 
