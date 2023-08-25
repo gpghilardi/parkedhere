@@ -27,9 +27,13 @@ Download the app code, open it in Android Studio, build and install it on your d
 
 Open the app on your smartwatch.
 
+![Screenshot](docs/images/parkedhere_icon.png)
+
 Two buttons, nothing more, nothing less:
 - "Set position": reads the current position ans stores it in memory (not written anywhere)
 - "Navigate": opens Google Maps and sets it to navigate to the previously stored position
+
+![Screenshot](docs/images/parkedhere_buttons.png)
 
 ## Maintainers
 
