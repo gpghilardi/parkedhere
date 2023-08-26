@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
 
         // Ensure our smartwatch has a GPS receiver available...
         if (!hasGps()) {
-            Log.e(TAG, "This hardware doesn't have GPS.")
+            Log.e(TAG, "This hardware doesn't have a GPS receiver.")
             return
         }
 
@@ -223,6 +223,32 @@ fun StoreLocation(context: Context, locationStorage: LocationStorage) {
         }
 }
 
+private fun NavigateToStoredLocation(context: Context) {
+    if (lastStoredLocation != null) {
+        Toast.makeText(
+            context,
+            "Navigating to last stored position...",
+            Toast.LENGTH_SHORT
+        ).show()
+        val lat = lastStoredLocation?.latitude
+        val lng = lastStoredLocation?.longitude
+        val mapIntent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse("google.navigation:q=$lat,$lng")
+        )
+        mapIntent.setPackage("com.google.android.apps.maps")
+        if (mapIntent.resolveActivity(context.packageManager) != null) {
+            context.startActivity(mapIntent)
+        }
+    } else {
+        Toast.makeText(
+            context,
+            "No location stored!",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+}
+
 @SuppressLint("PrivateResource")
 @Composable
 fun ParkedHereButtons(locationStorage: LocationStorage) {
@@ -254,29 +280,7 @@ fun ParkedHereButtons(locationStorage: LocationStorage) {
     // Second button: "Navigate"
     Button(
         onClick = {
-            if (lastStoredLocation != null) {
-                Toast.makeText(
-                    context,
-                    "Navigating to last stored position...",
-                    Toast.LENGTH_SHORT
-                ).show()
-                val lat = lastStoredLocation?.latitude
-                val lng = lastStoredLocation?.longitude
-                val mapIntent = Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse("google.navigation:q=$lat,$lng")
-                )
-                mapIntent.setPackage("com.google.android.apps.maps")
-                if (mapIntent.resolveActivity(context.packageManager) != null) {
-                    context.startActivity(mapIntent)
-                }
-            } else {
-                Toast.makeText(
-                    context,
-                    "No location stored!",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+            NavigateToStoredLocation(context)
         },
         colors = ButtonDefaults.buttonColors(
             backgroundColor = ParkedHereBlue,
