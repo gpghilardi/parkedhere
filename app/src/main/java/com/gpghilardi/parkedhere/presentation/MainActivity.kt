@@ -49,6 +49,7 @@ import kotlinx.coroutines.runBlocking
 
 // Globals
 private val TAG: String = "ParkedHere"
+private val PREFIX: String = "ParkedHere"
 private lateinit var fusedLocationClient: FusedLocationProviderClient
 private var lastStoredLocation: Location? = null
 private val Context.locationDataStore by preferencesDataStore("LOCATION_STORE")
@@ -65,7 +66,7 @@ class MainActivity : ComponentActivity() {
 
         // Ensure our smartwatch has a GPS receiver available...
         if (!hasGps()) {
-            Log.e(TAG, "This hardware doesn't have a GPS receiver.")
+            Log.e(TAG, PREFIX + ": this hardware doesn't have a GPS receiver.")
             return
         }
 
@@ -88,15 +89,15 @@ class MainActivity : ComponentActivity() {
         ) { permissions ->
             when {
                 permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
-                    Log.d(TAG, "Precise location access granted.")
+                    Log.d(TAG, PREFIX + ": precise location access granted.")
                 }
 
                 permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
-                    Log.d(TAG, "Only approximate location access granted.")
+                    Log.d(TAG, PREFIX + ": only approximate location access granted.")
                 }
 
                 else -> {
-                    Log.w(TAG, "No location access granted.")
+                    Log.w(TAG, PREFIX + ": no location access granted.")
                 }
             }
         }
@@ -141,7 +142,7 @@ class LocationStorage(val context: Context) {
                 it[locationLatitudeKey] = location.latitude
                 it[locationLongitudeKey] = location.longitude
                 Log.d(
-                    TAG, "LocationStorage: location stored: " +
+                    TAG, PREFIX + ": LocationStorage: location stored: " +
                             it[locationLatitudeKey].toString() + ", " +
                             it[locationLongitudeKey].toString()
                 )
@@ -167,13 +168,13 @@ class LocationStorage(val context: Context) {
 
         if (ret != null) {
             Log.d(
-                TAG, "LocationStorage: found location stored: " +
+                TAG, PREFIX + ": LocationStorage: found location stored: " +
                         ret.latitude.toString() + ", " +
                         ret.longitude.toString()
             )
         } else {
             Log.d(
-                TAG, "LocationStorage: no location previously stored!"
+                TAG, PREFIX + ": LocationStorage: no location previously stored!"
             )
         }
 
@@ -209,14 +210,14 @@ fun StoreLocation(context: Context, locationStorage: LocationStorage) {
                 ).show()
                 locationStorage.setLocation(location)
                 Log.d(
-                    TAG, "Stored position: " +
+                    TAG, PREFIX + ": new position stored: " +
                             lastStoredLocation?.latitude.toString() + ", " +
                             lastStoredLocation?.longitude.toString()
                 )
             } else {
                 Toast.makeText(
                     context,
-                    "No position to store at this time!",
+                    PREFIX + ": no position to store at this time!",
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -239,6 +240,17 @@ private fun NavigateToStoredLocation(context: Context) {
         mapIntent.setPackage("com.google.android.apps.maps")
         if (mapIntent.resolveActivity(context.packageManager) != null) {
             context.startActivity(mapIntent)
+            Log.d(
+                TAG, PREFIX + ": opening Google Maps to coords: " +
+                        lastStoredLocation?.latitude.toString() + ", " +
+                        lastStoredLocation?.longitude.toString()
+            )
+        } else {
+            Log.w(
+                TAG, PREFIX + ": cannot open Google Maps to coords: " +
+                        lastStoredLocation?.latitude.toString() + ", " +
+                        lastStoredLocation?.longitude.toString()
+            )
         }
     } else {
         Toast.makeText(
