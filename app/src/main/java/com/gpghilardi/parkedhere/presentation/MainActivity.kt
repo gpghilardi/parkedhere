@@ -47,17 +47,27 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 
-// Globals
+/**
+ * Global constants
+ */
 private val TAG: String = "ParkedHere"
 private val PREFIX: String = "ParkedHere"
-private lateinit var fusedLocationClient: FusedLocationProviderClient
-private var lastStoredLocation: Location? = null
 private val Context.locationDataStore by preferencesDataStore("LOCATION_STORE")
 
+/**
+ * Global variables
+ */
+private lateinit var fusedLocationClient: FusedLocationProviderClient
+private var lastStoredLocation: Location? = null
+
+/**
+ * MainActivity: this app contains just this single Activity, starting everything.
+ */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // If we've previoysly stored a location in the app's own data store, use it!
         locationStorage = LocationStorage(this)
         val previousStoredLocation = locationStorage.getLocation()
         if (previousStoredLocation != null) {
@@ -70,6 +80,7 @@ class MainActivity : ComponentActivity() {
             return
         }
 
+        // Initialize the location services (also checks for the proper permissions)
         initializeLocationServices()
 
         // Show the interface
@@ -136,7 +147,12 @@ class LocationStorage(val context: Context) {
     private val locationLatitudeKey = doublePreferencesKey("LOCATION_LATITUDE")
     private val locationLongitudeKey = doublePreferencesKey("LOCATION_LONGITUDE")
 
+    /**
+     * Store the location data in app's own data store
+     */
     fun setLocation(location: Location) {
+        // We block the async call ans wait for the values being properly stored
+        // Note: we just set a couple of scalar values when the input presses a button!
         runBlocking {
             context.locationDataStore.edit {
                 it[locationLatitudeKey] = location.latitude
@@ -150,7 +166,12 @@ class LocationStorage(val context: Context) {
         }
     }
 
+    /**
+     * Read the location data from app's own data store (it may be null, if nothing was stored)
+     */
     fun getLocation(): Location? {
+        // We block the async call until data is read
+        // Note: we just try to get a couple of scalar values once, at app startup!
         val ret = runBlocking {
             context.locationDataStore.data.map {
                 val latitude = it[locationLatitudeKey]
@@ -182,6 +203,10 @@ class LocationStorage(val context: Context) {
     }
 }
 
+/**
+ * This create the app UI structure: a single vertically- and horizontally-centered
+ * column for other UI components
+ */
 @Composable
 fun ParkedHearWearApp(locationStorage: LocationStorage) {
     ParkedHereTheme {
@@ -197,6 +222,9 @@ fun ParkedHearWearApp(locationStorage: LocationStorage) {
     }
 }
 
+/**
+ * Callback function invoked by the "Set position" button for actually storing the location data
+ */
 @SuppressLint("MissingPermission")
 fun StoreLocation(context: Context, locationStorage: LocationStorage) {
     fusedLocationClient.lastLocation
@@ -224,6 +252,10 @@ fun StoreLocation(context: Context, locationStorage: LocationStorage) {
         }
 }
 
+/**
+ * Callback function invoked by the "Navigate" button for opening Google Maps
+ * to the previously stored location data (if any)
+ */
 private fun NavigateToStoredLocation(context: Context) {
     if (lastStoredLocation != null) {
         Toast.makeText(
@@ -261,6 +293,9 @@ private fun NavigateToStoredLocation(context: Context) {
     }
 }
 
+/**
+ * This create the app two buttons
+ */
 @SuppressLint("PrivateResource")
 @Composable
 fun ParkedHereButtons(locationStorage: LocationStorage) {
@@ -313,6 +348,9 @@ fun ParkedHereButtons(locationStorage: LocationStorage) {
     }
 }
 
+/**
+ * Required for preview the app UI in Android Studio
+ */
 @Preview(device = Devices.WEAR_OS_LARGE_ROUND, showSystemUi = true)
 @Composable
 fun DefaultPreview() {
