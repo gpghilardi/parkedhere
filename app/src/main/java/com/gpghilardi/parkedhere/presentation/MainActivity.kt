@@ -30,6 +30,9 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
+import androidx.datastore.preferences.core.doublePreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.ButtonDefaults
 import androidx.wear.compose.material.Icon
@@ -39,17 +42,29 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.gpghilardi.parkedhere.R
 import com.gpghilardi.parkedhere.presentation.theme.ParkedHereTheme
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 
+// Globals
+private val TAG: String = "ParkedHere"
 private lateinit var fusedLocationClient: FusedLocationProviderClient
 private var lastStoredLocation: Location? = null
+private val Context.locationDataStore by preferencesDataStore("LOCATION_STORE")
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        locationStorage = LocationStorage(this)
+        val previousStoredLocation = locationStorage.getLocation()
+        if (previousStoredLocation != null) {
+            lastStoredLocation = previousStoredLocation
+        }
+
         // Ensure our smartwatch has a GPS receiver available...
         if (!hasGps()) {
-            Log.e("ParkedHere", "This hardware doesn't have GPS.")
+            Log.e(TAG, "This hardware doesn't have GPS.")
             return
         }
 
@@ -57,13 +72,13 @@ class MainActivity : ComponentActivity() {
 
         // Show the interface
         setContent {
-            ParkedHearWearApp()
+            ParkedHearWearApp(locationStorage)
         }
     }
 
     /**
      * Initialize the LocationServices object, used for obtaining the current location.
-     * Before initialiing it, this mehod checks for GPS-related Android permissions and
+     * Before initializing it, this mehod checks for GPS-related Android permissions and
      * ask the user (popup) if they are missing
      */
     private fun initializeLocationServices() {
@@ -72,15 +87,15 @@ class MainActivity : ComponentActivity() {
         ) { permissions ->
             when {
                 permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
-                    Log.d("ParkedHere", "Precise location access granted.")
+                    Log.d(TAG, "Precise location access granted.")
                 }
 
                 permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
-                    Log.d("ParkedHere", "Only approximate location access granted.")
+                    Log.d(TAG, "Only approximate location access granted.")
                 }
 
                 else -> {
-                    Log.w("ParkedHere", "No location access granted.")
+                    Log.w(TAG, "No location access granted.")
                 }
             }
         }
@@ -107,10 +122,66 @@ class MainActivity : ComponentActivity() {
 
     private fun hasGps(): Boolean =
         packageManager.hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS)
+
+    private lateinit var locationStorage: LocationStorage
+}
+
+/**
+ * This simple class is used for make location data persistent across app restarts.
+ * The idea is to protect the location data set by user from app crashes or os-forced app kills.
+ */
+class LocationStorage(val context: Context) {
+    private val locationLatitudeKey = doublePreferencesKey("LOCATION_LATITUDE")
+    private val locationLongitudeKey = doublePreferencesKey("LOCATION_LONGITUDE")
+
+    fun setLocation(location: Location) {
+        runBlocking {
+            context.locationDataStore.edit {
+                it[locationLatitudeKey] = location.latitude
+                it[locationLongitudeKey] = location.longitude
+                Log.d(
+                    TAG, "LocationStorage: location stored: " +
+                            it[locationLatitudeKey].toString() + ", " +
+                            it[locationLongitudeKey].toString()
+                )
+            }
+        }
+    }
+
+    fun getLocation(): Location? {
+        val ret = runBlocking {
+            context.locationDataStore.data.map {
+                val latitude = it[locationLatitudeKey]
+                val longitude = it[locationLongitudeKey]
+                if (latitude == null || longitude == null) {
+                    return@map null
+                }
+
+                val ret = Location("") //provider name is unnecessary
+                ret.latitude = latitude
+                ret.longitude = longitude
+                return@map ret
+            }.first()
+        }
+
+        if (ret != null) {
+            Log.d(
+                TAG, "LocationStorage: found location stored: " +
+                        ret.latitude.toString() + ", " +
+                        ret.longitude.toString()
+            )
+        } else {
+            Log.d(
+                TAG, "LocationStorage: no location previously stored!"
+            )
+        }
+
+        return ret
+    }
 }
 
 @Composable
-fun ParkedHearWearApp() {
+fun ParkedHearWearApp(locationStorage: LocationStorage) {
     ParkedHereTheme {
         Column(
             modifier = Modifier
@@ -119,13 +190,13 @@ fun ParkedHearWearApp() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ParkedHereButtons()
+            ParkedHereButtons(locationStorage)
         }
     }
 }
 
 @SuppressLint("MissingPermission")
-fun StoreLocation(context: Context) {
+fun StoreLocation(context: Context, locationStorage: LocationStorage) {
     fusedLocationClient.lastLocation
         .addOnSuccessListener { location: Location? ->
             if (location != null) {
@@ -135,8 +206,9 @@ fun StoreLocation(context: Context) {
                     "Position stored!",
                     Toast.LENGTH_SHORT
                 ).show()
+                locationStorage.setLocation(location)
                 Log.d(
-                    "ParkedHere", "Stored position: " +
+                    TAG, "Stored position: " +
                             lastStoredLocation?.latitude.toString() + ", " +
                             lastStoredLocation?.longitude.toString()
                 )
@@ -152,13 +224,13 @@ fun StoreLocation(context: Context) {
 
 @SuppressLint("PrivateResource")
 @Composable
-fun ParkedHereButtons() {
+fun ParkedHereButtons(locationStorage: LocationStorage) {
     val context = LocalContext.current
 
     // Fist button: "Set position"
     Button(
         onClick = {
-            StoreLocation(context)
+            StoreLocation(context, locationStorage)
         },
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Color(0xFF03A9F4),
@@ -227,5 +299,6 @@ fun ParkedHereButtons() {
 @Preview(device = Devices.WEAR_OS_LARGE_ROUND, showSystemUi = true)
 @Composable
 fun DefaultPreview() {
-    ParkedHearWearApp()
+    val locationStorage = LocationStorage(LocalContext.current)
+    ParkedHearWearApp(locationStorage)
 }
