@@ -67,20 +67,20 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // If we've previoysly stored a location in the app's own data store, use it!
+        // If we've previously stored a location data in the app's own data store, use it!
         locationStorage = LocationStorage(this)
         val previousStoredLocation = locationStorage.getLocation()
         if (previousStoredLocation != null) {
             lastStoredLocation = previousStoredLocation
         }
 
-        // Ensure our smartwatch has a GPS receiver available...
+        // Ensure our device has a GPS receiver available...
         if (!hasGps()) {
             Log.e(TAG, PREFIX + ": this hardware doesn't have a GPS receiver.")
             return
         }
 
-        // Initialize the location services (also checks for the proper permissions)
+        // Initialize the location services (it also checks for the proper permissions)
         initializeLocationServices()
 
         // Show the interface
@@ -91,8 +91,8 @@ class MainActivity : ComponentActivity() {
 
     /**
      * Initialize the LocationServices object, used for obtaining the current location.
-     * Before initializing it, this mehod checks for GPS-related Android permissions and
-     * ask the user (popup) if they are missing
+     * Before initializing it, this method checks for GPS-related Android permissions and
+     * asks the user (via a popup) if they are missing
      */
     private fun initializeLocationServices() {
         val requestPermissionLauncher = registerForActivityResult(
@@ -141,7 +141,7 @@ class MainActivity : ComponentActivity() {
 
 /**
  * This simple class is used for make location data persistent across app restarts.
- * The idea is to protect the location data set by user from app crashes or os-forced app kills.
+ * The purpose is to protect the location data set by user from app crashes or os-forced app kills.
  */
 class LocationStorage(val context: Context) {
     private val locationLatitudeKey = doublePreferencesKey("LOCATION_LATITUDE")
@@ -151,7 +151,7 @@ class LocationStorage(val context: Context) {
      * Store the location data in app's own data store
      */
     fun setLocation(location: Location) {
-        // We block the async call ans wait for the values being properly stored
+        // We block the async call and wait for the values being properly stored
         // Note: we just set a couple of scalar values when the input presses a button!
         runBlocking {
             context.locationDataStore.edit {
@@ -167,10 +167,11 @@ class LocationStorage(val context: Context) {
     }
 
     /**
-     * Read the location data from app's own data store (it may be null, if nothing was stored)
+     * Read the location data from app's own data store (it may be null,
+     * if nothing was previously stored)
      */
     fun getLocation(): Location? {
-        // We block the async call until data is read
+        // We block the async call until our data is read
         // Note: we just try to get a couple of scalar values once, at app startup!
         val ret = runBlocking {
             context.locationDataStore.data.map {
