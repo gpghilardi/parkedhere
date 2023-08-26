@@ -41,6 +41,7 @@ import androidx.wear.compose.material.Text
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.gpghilardi.parkedhere.R
+import com.gpghilardi.parkedhere.presentation.theme.ParkedHereBlue
 import com.gpghilardi.parkedhere.presentation.theme.ParkedHereTheme
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -233,7 +234,7 @@ fun ParkedHereButtons(locationStorage: LocationStorage) {
             StoreLocation(context, locationStorage)
         },
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = Color(0xFF03A9F4),
+            backgroundColor = ParkedHereBlue,
             contentColor = Color.White
         ),
         modifier = Modifier
@@ -278,7 +279,7 @@ fun ParkedHereButtons(locationStorage: LocationStorage) {
             }
         },
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = Color(0xFF03A9F4),
+            backgroundColor = ParkedHereBlue,
             contentColor = Color.White
         ),
         modifier = Modifier
