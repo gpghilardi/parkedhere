@@ -58,7 +58,6 @@ private val Context.locationDataStore by preferencesDataStore("LOCATION_STORE")
  * Global variables
  */
 private lateinit var fusedLocationClient: FusedLocationProviderClient
-private var lastStoredLocation: Location? = null
 
 /**
  * MainActivity: this app contains just this single Activity, starting everything.
@@ -69,10 +68,6 @@ class MainActivity : ComponentActivity() {
 
         // If we've previously stored a location data in the app's own data store, use it!
         locationStorage = LocationStorage(this)
-        val previousStoredLocation = locationStorage.getLocation()
-        if (previousStoredLocation != null) {
-            lastStoredLocation = previousStoredLocation
-        }
 
         // Ensure our device has a GPS receiver available...
         if (!hasGps()) {
@@ -152,7 +147,7 @@ class LocationStorage(val context: Context) {
      */
     fun setLocation(location: Location) {
         // We block the async call and wait for the values being properly stored
-        // Note: we just set a couple of scalar values when the input presses a button!
+        // Note: we just set a couple of scalar values when the user presses a button!
         runBlocking {
             context.locationDataStore.edit {
                 it[locationLatitudeKey] = location.latitude
@@ -172,7 +167,8 @@ class LocationStorage(val context: Context) {
      */
     fun getLocation(): Location? {
         // We block the async call until our data is read
-        // Note: we just try to get a couple of scalar values once, at app startup!
+        // Note: we just try to get a couple of scalar values once in a while,
+        //       when the user presses a button!
         val ret = runBlocking {
             context.locationDataStore.data.map {
                 val latitude = it[locationLatitudeKey]
@@ -231,13 +227,13 @@ fun StoreLocation(context: Context, locationStorage: LocationStorage) {
     fusedLocationClient.lastLocation
         .addOnSuccessListener { location: Location? ->
             if (location != null) {
-                lastStoredLocation = location
                 Toast.makeText(
                     context,
                     "Position stored!",
                     Toast.LENGTH_SHORT
                 ).show()
                 locationStorage.setLocation(location)
+                val lastStoredLocation = locationStorage.getLocation()
                 Log.d(
                     TAG, PREFIX + ": new position stored: " +
                             lastStoredLocation?.latitude.toString() + ", " +
@@ -257,15 +253,16 @@ fun StoreLocation(context: Context, locationStorage: LocationStorage) {
  * Callback function invoked by the "Navigate" button for opening Google Maps
  * to the previously stored location data (if any)
  */
-private fun NavigateToStoredLocation(context: Context) {
+private fun NavigateToStoredLocation(context: Context, locationStorage: LocationStorage) {
+    val lastStoredLocation = locationStorage.getLocation()
     if (lastStoredLocation != null) {
         Toast.makeText(
             context,
             "Navigating to last stored position...",
             Toast.LENGTH_SHORT
         ).show()
-        val lat = lastStoredLocation?.latitude
-        val lng = lastStoredLocation?.longitude
+        val lat = lastStoredLocation.latitude
+        val lng = lastStoredLocation.longitude
         val mapIntent = Intent(
             Intent.ACTION_VIEW,
             Uri.parse("google.navigation:q=$lat,$lng")
@@ -275,14 +272,14 @@ private fun NavigateToStoredLocation(context: Context) {
             context.startActivity(mapIntent)
             Log.d(
                 TAG, PREFIX + ": opening Google Maps to coords: " +
-                        lastStoredLocation?.latitude.toString() + ", " +
-                        lastStoredLocation?.longitude.toString()
+                        lastStoredLocation.latitude.toString() + ", " +
+                        lastStoredLocation.longitude.toString()
             )
         } else {
             Log.w(
                 TAG, PREFIX + ": cannot open Google Maps to coords: " +
-                        lastStoredLocation?.latitude.toString() + ", " +
-                        lastStoredLocation?.longitude.toString()
+                        lastStoredLocation.latitude.toString() + ", " +
+                        lastStoredLocation.longitude.toString()
             )
         }
     } else {
@@ -328,7 +325,7 @@ fun ParkedHereButtons(locationStorage: LocationStorage) {
     // Second button: "Navigate"
     Button(
         onClick = {
-            NavigateToStoredLocation(context)
+            NavigateToStoredLocation(context, locationStorage)
         },
         colors = ButtonDefaults.buttonColors(
             backgroundColor = ParkedHereBlue,
