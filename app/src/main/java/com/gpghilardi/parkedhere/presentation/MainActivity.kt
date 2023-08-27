@@ -161,6 +161,9 @@ class MainActivity : ComponentActivity() {
 /**
  * This simple class is used for make location data persistent across app restarts.
  * The purpose is to protect the location data set by user from app crashes or os-forced app kills.
+ *
+ * Note: this storage belongs to the app. Data is thus stored locally, on the device.
+ *       In other words, the stored location data, is never collected nor shared to anyone.
  */
 class LocationStorage(val context: Context) {
     private val locationLatitudeKey = doublePreferencesKey("LOCATION_LATITUDE")
