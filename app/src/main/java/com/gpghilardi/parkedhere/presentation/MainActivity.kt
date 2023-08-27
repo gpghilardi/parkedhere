@@ -37,6 +37,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -45,10 +46,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -76,31 +80,35 @@ const val PREFIX: String = "ParkedHere"
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Ensure our device has a GPS receiver available...
-        if (!hasGps()) {
-            Log.e(TAG, "$PREFIX: this device lacks a GPS receiver.")
-            return
-        }
-
         // Initialize the location services (it also checks for the proper permissions)
         initializeLocationServices()
 
         // Show the interface
         setContent {
-            val locationViewModel = koinViewModel<LocationViewModel>()
-            val lastLocation by locationViewModel.lastLocation.collectAsState(initial = null)
+            val hasGps = remember {
+                hasGps()
+            }
+            ParkedHereTheme {
+                if (hasGps) {
+                    val locationViewModel = koinViewModel<LocationViewModel>()
+                    val lastLocation by locationViewModel.lastLocation.collectAsState(initial = null)
 
 
-            ParkedHearWearApp(
-                lastLocation = lastLocation,
-                onSetPositionClicked = {
-                    locationViewModel.saveLocation()
-                },
-                onNavigateLastClicked = {
-                    lastLocation?.let { navigateToStoredLocation(this, it) }
+                    ParkedHearWearApp(
+                        lastLocation = lastLocation,
+                        onSetPositionClicked = {
+                            locationViewModel.saveLocation()
+                        },
+                        onNavigateLastClicked = {
+                            lastLocation?.let { navigateToStoredLocation(this, it) }
+                        }
+                    )
+                } else {
+                    GpsNotAvailable()
                 }
-            )
+            }
+
+
         }
     }
 
@@ -162,53 +170,58 @@ fun ParkedHearWearApp(
     onSetPositionClicked: () -> Unit,
     onNavigateLastClicked: () -> Unit
 ) {
-    ParkedHereTheme {
-        Column(
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.background),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Fist button: "Set position"
+        Button(
+            onClick = onSetPositionClicked,
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = ParkedHereBlue,
+                contentColor = Color.White
+            ),
             modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colors.background),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxWidth()
+                .padding(start = 12.dp, end = 12.dp, bottom = 4.dp, top = 4.dp)
         ) {
-            // Fist button: "Set position"
+            Row {
+                Icon(
+                    painter = painterResource(R.drawable.baseline_add_location_24),
+                    contentDescription = stringResource(id = R.string.set_position_action_icon_content_desc)
+                )
+                Text(
+                    text = stringResource(id = R.string.set_position_action_label),
+                    Modifier.padding(start = 10.dp)
+                )
+            }
+        }
+
+        // Second button: "Navigate"
+        if (lastLocation != null) {
             Button(
-                onClick = onSetPositionClicked,
+                onClick = onNavigateLastClicked,
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = ParkedHereBlue,
                     contentColor = Color.White
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 12.dp, end = 12.dp, bottom = 4.dp, top = 4.dp)
+                    .padding(start = 12.dp, end = 12.dp, bottom = 4.dp)
             ) {
                 Row {
                     Icon(
-                        painter = painterResource(R.drawable.baseline_add_location_24),
-                        contentDescription = "Set position"
+                        painter = painterResource(R.drawable.baseline_navigation_24),
+                        contentDescription = stringResource(id = R.string.navigate_action_icon_content_desc)
                     )
-                    Text(text = "Set position", Modifier.padding(start = 10.dp))
-                }
-            }
-
-            // Second button: "Navigate"
-            if (lastLocation != null) {
-                Button(
-                    onClick = onNavigateLastClicked,
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = ParkedHereBlue,
-                        contentColor = Color.White
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 12.dp, end = 12.dp, bottom = 4.dp)
-                ) {
-                    Row {
-                        Icon(
-                            painter = painterResource(R.drawable.baseline_navigation_24),
-                            contentDescription = "Navigate"
-                        )
-                        Text(text = "Navigate", Modifier.padding(start = 10.dp))
-                    }
+                    Text(
+                        text = stringResource(id = R.string.navigate_action_label),
+                        Modifier.padding(start = 10.dp)
+                    )
                 }
             }
         }
@@ -240,6 +253,19 @@ private fun navigateToStoredLocation(context: Context, location: Location) {
     }
 }
 
+@Composable
+fun GpsNotAvailable() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Text(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .fillMaxWidth(),
+            text = stringResource(id = R.string.lack_gps),
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
 /**
  * Required for previewing the app UI in Android Studio
  */
@@ -251,4 +277,10 @@ fun DefaultPreview() {
         onNavigateLastClicked = {},
         onSetPositionClicked = {}
     )
+}
+
+@Preview(device = Devices.WEAR_OS_LARGE_ROUND, showSystemUi = true)
+@Composable
+fun GpsNotAvailablePreview() {
+    GpsNotAvailable()
 }

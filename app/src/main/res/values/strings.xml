@@ -1,8 +1,13 @@
 <resources>
     <string name="app_name">ParkedHere</string>
-    <!--
-    This string is used for square devices and overridden by hello_world in
-    values-round/strings.xml for round devices.
-    -->
-    <string name="hello_world">From the Square world,\nHello, %1$s!</string>
+    <string name="lack_gps">This device lacks a GPS receiver.</string>
+
+    <string name="set_position_action_label">Set position</string>
+    <string name="set_position_action_icon_content_desc">Set position action icon</string>
+
+    <string name="navigate_action_label">Navigate</string>
+    <string name="navigate_action_icon_content_desc">Navigate action icon</string>
+
+    <string name="no_location_available">No location available</string>
+    <string name="error_save_location">Error save location</string>
 </resources>

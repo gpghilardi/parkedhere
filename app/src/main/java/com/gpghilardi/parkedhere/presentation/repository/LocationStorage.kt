@@ -29,15 +29,19 @@ class LocationStorage(private val context: Context) {
      * Store the location data in app's own data store
      */
     suspend fun setLocation(location: Location?) {
-        if (location != null) {
-            context.locationDataStore.edit {
+        context.locationDataStore.edit {
+            if (location != null) {
                 it[locationLatitudeKey] = location.latitude
                 it[locationLongitudeKey] = location.longitude
-                Log.d(
-                    TAG,
-                    PREFIX + ": LocationStorage: location stored: ${it[locationLatitudeKey]}, ${it[locationLongitudeKey]}"
-                )
+            } else {
+                it.remove(locationLatitudeKey)
+                it.remove(locationLongitudeKey)
             }
+
+            Log.d(
+                TAG,
+                PREFIX + ": LocationStorage: location stored: ${it[locationLatitudeKey]}, ${it[locationLongitudeKey]}"
+            )
         }
     }
 
