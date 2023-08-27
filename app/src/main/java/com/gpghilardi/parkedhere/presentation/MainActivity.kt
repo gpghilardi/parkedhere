@@ -90,12 +90,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // If we've previously stored a location data in the app's own data store, use it!
+        // Create and enable the location storage for this app
         locationStorage = LocationStorage(this)
 
         // Ensure our device has a GPS receiver available...
         if (!hasGps()) {
-            Log.e(TAG, PREFIX + ": this hardware doesn't have a GPS receiver.")
+            Log.e(TAG, PREFIX + ": this device lacks a GPS receiver.")
             return
         }
 
@@ -110,7 +110,7 @@ class MainActivity : ComponentActivity() {
 
     /**
      * Initialize the LocationServices object, used for obtaining the current location.
-     * Before initializing it, this method checks for GPS-related Android permissions and
+     * Before initializing it, this method checks for location-related Android permissions and
      * asks the user (via a popup) if they are missing
      */
     private fun initializeLocationServices() {
@@ -201,7 +201,7 @@ class LocationStorage(val context: Context) {
                     return@map null
                 }
 
-                val ret = Location("") //provider name is unnecessary
+                val ret = Location("") // Provider name is unnecessary
                 ret.latitude = latitude
                 ret.longitude = longitude
                 return@map ret
@@ -225,8 +225,8 @@ class LocationStorage(val context: Context) {
 }
 
 /**
- * This create the app UI structure: a single vertically- and horizontally-centered
- * column for other UI components
+ * This create the app's UI structure: a single vertically- and horizontally-centered
+ * column for nesting other UI components
  */
 @Composable
 fun ParkedHearWearApp(locationStorage: LocationStorage) {
@@ -274,7 +274,7 @@ fun StoreLocation(context: Context, locationStorage: LocationStorage) {
 }
 
 /**
- * Callback function invoked by the "Navigate" button for opening Google Maps
+ * Callback function invoked by the "Navigate" button for opening Google Maps, pointing it
  * to the previously stored location data (if any)
  */
 private fun NavigateToStoredLocation(context: Context, locationStorage: LocationStorage) {
@@ -316,7 +316,7 @@ private fun NavigateToStoredLocation(context: Context, locationStorage: Location
 }
 
 /**
- * This create the app two buttons
+ * This create the app's real interface: two buttons
  */
 @SuppressLint("PrivateResource")
 @Composable
