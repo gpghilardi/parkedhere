@@ -285,15 +285,13 @@ private fun NavigateToStoredLocation(context: Context, locationStorage: Location
             "Navigating to last stored position...",
             Toast.LENGTH_SHORT
         ).show()
-        val lat = lastStoredLocation.latitude
-        val lng = lastStoredLocation.longitude
         val mapIntent = Intent(
             Intent.ACTION_VIEW,
-            Uri.parse("google.navigation:q=$lat,$lng")
+            Uri.parse("google.navigation:q=$lastStoredLocation.latitude,$lastStoredLocation.longitude")
         )
         mapIntent.setPackage("com.google.android.apps.maps")
         if (mapIntent.resolveActivity(context.packageManager) != null) {
-            context.startActivity(mapIntent)
+            context.startActivity(mapIntent) // Open Google Maps...
             Log.d(
                 TAG, PREFIX + ": opening Google Maps to coords: " +
                         lastStoredLocation.latitude.toString() + ", " +
@@ -376,6 +374,5 @@ fun ParkedHereButtons(locationStorage: LocationStorage) {
 @Preview(device = Devices.WEAR_OS_LARGE_ROUND, showSystemUi = true)
 @Composable
 fun DefaultPreview() {
-    val locationStorage = LocationStorage(LocalContext.current)
-    ParkedHearWearApp(locationStorage)
+    ParkedHearWearApp(LocationStorage(LocalContext.current))
 }
