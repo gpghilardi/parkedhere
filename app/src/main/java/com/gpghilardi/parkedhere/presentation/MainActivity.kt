@@ -59,14 +59,10 @@ import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.gpghilardi.parkedhere.R
-import com.gpghilardi.parkedhere.presentation.di.appModule
 import com.gpghilardi.parkedhere.presentation.theme.ParkedHereBlue
 import com.gpghilardi.parkedhere.presentation.theme.ParkedHereTheme
 import com.gpghilardi.parkedhere.presentation.viewmodel.LocationViewModel
-import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.compose.koinViewModel
-import org.koin.core.context.startKoin
 
 /**
  * Global constants
@@ -80,12 +76,6 @@ const val PREFIX: String = "ParkedHere"
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        startKoin {
-            androidLogger()
-            androidContext(applicationContext)
-            modules(appModule)
-        }
 
         // Ensure our device has a GPS receiver available...
         if (!hasGps()) {
