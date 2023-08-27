@@ -31,7 +31,7 @@ Open the app on your smartwatch.
 ![Screenshot](docs/images/parkedhere_icon.png)
 
 Two buttons, nothing more, nothing less:
-- "Set position": reads the current position ans stores it in app's own data store
+- "Set position": reads the current position and stores it in app's own data store
 - "Navigate": opens Google Maps and sets it to navigate to the previously stored position
 
 Stored location data (latitude and longitude scalar values) is persisted, this way we don't lose the stored location data in the unlucky event the app crashes or it's killed by the os for whatever reason.
