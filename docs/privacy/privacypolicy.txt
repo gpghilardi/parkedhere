@@ -1,0 +1,60 @@
+**Privacy Policy**
+
+Gian Paolo Ghilardi built the ParkedHere app as an Open Source app (MIT license). This app is provided by Gian Paolo Ghilardi at no cost and is intended for use as is.
+
+This page is used to inform visitors regarding my policies with the collection, use, and disclosure of Personal Information if anyone decided to use my Service.
+
+The terms used in this Privacy Policy have the same meanings as in our Terms and Conditions, which are accessible at ParkedHere unless otherwise defined in this Privacy Policy.
+
+**Information Collection and Use**
+
+The app does not collect and/or share any Personal Information to anyone. It's meant and designed to run a WearOS device without exchanging data to anyone.
+
+The app contains just two buttons:
+- when you press the "Set position" button, the location data (i.e. GPS position) is read from the device's received and stored in the app's own settings.
+- when you press the "Navigate" button, a previously saved location data (i.e. GPS position) is read from app's own settings and used to open Google Maps.
+
+A simple app disinstallation will remove any previously-stored location data, i.e. cleanup.
+
+Location data stored: just a couple of values, latitude and longitude of the location when you last pressed the "Set location" button.
+
+The app does not use third-party services that may collect information used to identify you.
+The app does absolutely nothing without a user input, i.e., pressing one of the two above-mentioned buttons.
+
+Link to the privacy policy of third-party service providers used by the app
+
+*   [Google Play Services](https://www.google.com/policies/privacy/)
+
+**Log Data**
+
+No data is stored or logged besides the location data as described in the previous section.
+
+**Cookies**
+
+The app does not use cookies or any other way to track the user.
+
+**Service Providers**
+
+The app does not use any service provider.
+
+**Security**
+
+All data is stored on the user's device only: data is not collected nor shared to anyone.
+
+**Links to Other Sites**
+
+The app does not include any link to other sites at all.
+
+**Children’s Privacy**
+
+The app do not address anyone under the age of 13.
+
+**Changes to This Privacy Policy**
+
+I may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes. I will notify you of any changes by posting the new Privacy Policy on this page.
+
+This policy is effective as of 2023-08-27
+
+**Contact Us**
+
+If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact me at gpghilardi@gmail.com.
