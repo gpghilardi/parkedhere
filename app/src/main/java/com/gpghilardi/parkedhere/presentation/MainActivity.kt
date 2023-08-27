@@ -347,7 +347,7 @@ fun ParkedHereButtons(locationStorage: LocationStorage) {
 }
 
 /**
- * Required for preview the app UI in Android Studio
+ * Required for previewing the app UI in Android Studio
  */
 @Preview(device = Devices.WEAR_OS_LARGE_ROUND, showSystemUi = true)
 @Composable
