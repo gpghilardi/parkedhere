@@ -163,7 +163,7 @@ class MainActivity : ComponentActivity() {
  * The purpose is to protect the location data set by user from app crashes or os-forced app kills.
  *
  * Note: this storage belongs to the app. Data is thus stored locally, on the device.
- *       In other words, the stored location data, is never collected nor shared to anyone.
+ *       In other words, the stored location data is never collected nor shared to anyone.
  */
 class LocationStorage(val context: Context) {
     private val locationLatitudeKey = doublePreferencesKey("LOCATION_LATITUDE")
