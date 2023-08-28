@@ -3,6 +3,9 @@ package com.gpghilardi.parkedhere.presentation.repository
 import android.content.Context
 import android.location.Location
 import android.util.Log
+import androidx.annotation.VisibleForTesting
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
@@ -21,9 +24,20 @@ import kotlinx.coroutines.flow.map
 
 private val Context.locationDataStore by preferencesDataStore("LOCATION_STORE")
 
+@VisibleForTesting(otherwise = VisibleForTesting.NONE)
+fun Context.getLocationDataStoreTest(): DataStore<Preferences> {
+    return locationDataStore
+}
+
+@VisibleForTesting
+const val LOCATION_LATITUDE = "LOCATION_LATITUDE"
+
+@VisibleForTesting
+const val LOCATION_LONGITUDE = "LOCATION_LONGITUDE"
+
 class LocationStorage(private val context: Context) {
-    private val locationLatitudeKey = doublePreferencesKey("LOCATION_LATITUDE")
-    private val locationLongitudeKey = doublePreferencesKey("LOCATION_LONGITUDE")
+    private val locationLatitudeKey = doublePreferencesKey(LOCATION_LATITUDE)
+    private val locationLongitudeKey = doublePreferencesKey(LOCATION_LONGITUDE)
 
     /**
      * Store the location data in app's own data store
