@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("jacoco")
 }
 
 android {
@@ -16,10 +17,19 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
+        debug {
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
+
+            testCoverage {
+                jacocoVersion = "0.8.10"
+            }
+        }
+
         release {
             isMinifyEnabled = true
             proguardFiles(
@@ -42,9 +52,7 @@ android {
         kotlinCompilerExtensionVersion = "1.4.3"
     }
     packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
+        resources.excludes.add("META-INF/*")
     }
     buildToolsVersion = "34.0.0"
 }
@@ -62,8 +70,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("androidx.activity:activity-compose:1.7.2")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest:1.5.0")
 
@@ -72,5 +78,16 @@ dependencies {
     implementation("io.insert-koin:koin-androidx-compose:3.4.3")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:rules:1.5.0")
+    testImplementation("io.mockk:mockk-android:1.13.7")
+    testImplementation("io.mockk:mockk-agent:1.13.7")
+    androidTestImplementation("io.mockk:mockk-android:1.13.7")
+    androidTestImplementation("io.mockk:mockk-agent:1.13.7")
+    androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 
 }
