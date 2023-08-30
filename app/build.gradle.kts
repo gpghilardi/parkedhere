@@ -54,6 +54,14 @@ android {
     packaging {
         resources.excludes.add("META-INF/*")
     }
+//    testOptions {
+//        packaging {
+//            jniLibs {
+//                useLegacyPackaging = true
+//            }
+//        }
+//    }
+
     buildToolsVersion = "34.0.0"
 }
 
@@ -81,10 +89,10 @@ dependencies {
 
     androidTestImplementation("androidx.test:runner:1.5.2")
     androidTestImplementation("androidx.test:rules:1.5.0")
-    testImplementation("io.mockk:mockk-android:1.13.7")
-    testImplementation("io.mockk:mockk-agent:1.13.7")
-    androidTestImplementation("io.mockk:mockk-android:1.13.7")
-    androidTestImplementation("io.mockk:mockk-agent:1.13.7")
+    testImplementation("io.mockk:mockk-android:1.13.3")
+    testImplementation("io.mockk:mockk-agent:1.13.3")
+    androidTestImplementation("io.mockk:mockk-android:1.13.3")
+    androidTestImplementation("io.mockk:mockk-agent:1.13.3")
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")

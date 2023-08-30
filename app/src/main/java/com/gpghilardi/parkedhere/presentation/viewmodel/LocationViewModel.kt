@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.gpghilardi.parkedhere.R
 import com.gpghilardi.parkedhere.presentation.TAG
@@ -15,11 +16,10 @@ import kotlinx.coroutines.tasks.await
 
 class LocationViewModel(
     private val context: Context,
-    private val locationStorage: LocationStorage
-) : ViewModel() {
-
-    private val fusedLocationClient =
+    private val locationStorage: LocationStorage,
+    private val fusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
+) : ViewModel() {
 
     val lastLocation = locationStorage.getLocation()
 
