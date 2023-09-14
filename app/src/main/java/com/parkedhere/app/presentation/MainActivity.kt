@@ -64,6 +64,7 @@ import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.parkedhere.app.R
 import com.parkedhere.app.presentation.theme.ParkedHereBlue
+import com.parkedhere.app.presentation.theme.ParkedHereGreen
 import com.parkedhere.app.presentation.theme.ParkedHereTheme
 import com.parkedhere.app.presentation.viewmodel.LocationViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -202,29 +203,28 @@ fun ParkedHearWearApp(
         }
 
         // Second button: "Navigate"
-        if (lastLocation != null) {
-            Button(
-                onClick = onNavigateLastClicked,
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = ParkedHereBlue,
-                    contentColor = Color.White
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 12.dp, end = 12.dp, bottom = 4.dp)
-            ) {
-                Row {
-                    Icon(
-                        painter = painterResource(R.drawable.baseline_navigation_24),
-                        contentDescription = stringResource(id = R.string.navigate_action_icon_content_desc)
-                    )
-                    Text(
-                        text = stringResource(id = R.string.navigate_action_label),
-                        Modifier.padding(start = 10.dp)
-                    )
-                }
+        Button(
+            onClick = onNavigateLastClicked,
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = if (lastLocation == null) ParkedHereBlue else ParkedHereGreen,
+                contentColor = Color.White
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 12.dp, end = 12.dp, bottom = 4.dp)
+        ) {
+            Row {
+                Icon(
+                    painter = painterResource(R.drawable.baseline_navigation_24),
+                    contentDescription = stringResource(id = R.string.navigate_action_icon_content_desc)
+                )
+                Text(
+                    text = stringResource(id = R.string.navigate_action_label),
+                    Modifier.padding(start = 10.dp)
+                )
             }
         }
+
     }
 }
 
