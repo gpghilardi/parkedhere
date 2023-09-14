@@ -50,4 +50,4 @@ PRs are accepted.
 
 ## License
 
-MIT © 2023 gpghilardi
+MIT © 2023 gpghilardi and other contributors

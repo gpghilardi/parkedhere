@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.gpghilardi.parkedhere"
+    namespace = "com.parkedhere.app"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.gpghilardi.parkedhere"
+        applicationId = "com.parkedhere.app"
         minSdk = 30
         targetSdk = 33
         versionCode = 4

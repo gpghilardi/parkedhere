@@ -1,4 +1,4 @@
-package com.gpghilardi.parkedhere.presentation.theme
+package com.parkedhere.app.presentation.theme
 
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily

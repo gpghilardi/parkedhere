@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.gpghilardi.parkedhere.presentation
+package com.parkedhere.app.presentation
 
 import android.Manifest
 import android.content.Context
@@ -62,10 +62,10 @@ import androidx.wear.compose.material.ButtonDefaults
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
-import com.gpghilardi.parkedhere.R
-import com.gpghilardi.parkedhere.presentation.theme.ParkedHereBlue
-import com.gpghilardi.parkedhere.presentation.theme.ParkedHereTheme
-import com.gpghilardi.parkedhere.presentation.viewmodel.LocationViewModel
+import com.parkedhere.app.R
+import com.parkedhere.app.presentation.theme.ParkedHereBlue
+import com.parkedhere.app.presentation.theme.ParkedHereTheme
+import com.parkedhere.app.presentation.viewmodel.LocationViewModel
 import org.koin.androidx.compose.koinViewModel
 
 /**
