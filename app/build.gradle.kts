@@ -11,8 +11,8 @@ android {
         applicationId = "com.gpghilardi.parkedhere"
         minSdk = 30
         targetSdk = 33
-        versionCode = 5
-        versionName = "1.0.3"
+        versionCode = 6
+        versionName = "1.0.4"
         vectorDrawables {
             useSupportLibrary = true
         }
