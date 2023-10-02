@@ -1,4 +1,4 @@
-package com.parkedhere.app.presentation.repository
+package com.gpghilardi.parkedhere.presentation.repository
 
 import android.content.Context
 import android.location.Location
@@ -6,8 +6,8 @@ import android.util.Log
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
-import com.parkedhere.app.presentation.PREFIX
-import com.parkedhere.app.presentation.TAG
+import com.gpghilardi.parkedhere.presentation.PREFIX
+import com.gpghilardi.parkedhere.presentation.TAG
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

@@ -1,4 +1,4 @@
-package com.parkedhere.app.presentation.theme
+package com.gpghilardi.parkedhere.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 import androidx.wear.compose.material.Colors

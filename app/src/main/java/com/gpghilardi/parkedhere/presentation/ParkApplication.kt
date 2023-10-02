@@ -1,7 +1,7 @@
-package com.parkedhere.app.presentation
+package com.gpghilardi.parkedhere.presentation
 
 import android.app.Application
-import com.parkedhere.app.presentation.di.appModule
+import com.gpghilardi.parkedhere.presentation.di.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin

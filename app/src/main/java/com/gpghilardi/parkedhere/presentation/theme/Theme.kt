@@ -1,4 +1,4 @@
-package com.parkedhere.app.presentation.theme
+package com.gpghilardi.parkedhere.presentation.theme
 
 import androidx.compose.runtime.Composable
 import androidx.wear.compose.material.MaterialTheme
